@@ -1,29 +1,30 @@
-#!/Applications/XAMPP/xamppfiles/bin/php
 <?php
-include_once('/Applications/XAMPP/xamppfiles/lib/php/pear/MDB2.php');
-include_once('/Applications/XAMPP/xamppfiles/lib/php/pear/Net/IPv4.php');
-include_once('/Applications/XAMPP/xamppfiles/lib/php/pear/Net/DNS.php');
+include_once('MDB2.php');
+include_once('Net/IPv4.php');
+include_once('Net/DNS.php');
+
 class cache
 {
 	public static function cache_put($key, $val, $ttl)
 	{
 		$memcache = new Memcache;
-		$memcache->connect('www0stl0.lan.announcemedia.com', 11211) or die ("Could not connect");
+		$memcache->connect('www0stl0.lan', 11211) or die ("Could not connect");
 		return $memcache->set($key, $val, false, $ttl) or die ("Failed to save data at the server");
 	}
 	public static function cache_get($key)
 	{
 		$memcache = new Memcache;
-		$memcache->connect('www0stl0.lan.announcemedia.com', 11211) or die ("Could not connect");
+		$memcache->connect('www0stl0.lan', 11211) or die ("Could not connect");
 		return $memcache->get($key);
 	}
 	public static function cache_increment($key)
 	{
 		$memcache = new Memcache;
-		$memcache->connect('www0stl0.lan.announcemedia.com', 11211) or die ("Could not connect");
+		$memcache->connect('www0stl0.lan', 11211) or die ("Could not connect");
 		return $memcache->increment('routed_calls'.$host);
 	}
 }
+
 class SRV_lookup
 {
 	function lookup_hosts($service, $location, $domain)
@@ -56,20 +57,23 @@ class SRV_lookup
 		return $servers;
 	}
 }
+
 class stats
 {
 	public static function routed_calls($host)
 	{
 		$memcache = new Memcache;
-		$memcache->connect('www0stl0.lan.announcemedia.com', 11211) or die ("Could not connect");
-		return $memcache->get('routed_calls'.$host);
+		$memcache->connect('www0stl0.lan', 11211) or die ("Could not connect");
+		return $memcache->get('routed_calls' . $host);
 	}
+
 	public static function route_call($host)
 	{
 		$memcache = new Memcache;
-		$memcache->connect('www0stl0.lan.announcemedia.com', 11211) or die ("Could not connect");
-		return $memcache->increment('routed_calls'.$host);
+		$memcache->connect('www0stl0.lan', 11211) or die ("Could not connect");
+		return $memcache->increment('routed_calls' . $host);
 	}
+
 	public static function get_next_server($servers)
 	{
 		//TODO: support multiple preferences with server health checks
